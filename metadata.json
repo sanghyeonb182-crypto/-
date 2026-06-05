@@ -1,0 +1,8 @@
+{
+  "name": "Remix: 나와 너의 취향 일치도는?",
+  "description": "새 학기 처음 만난 친구와 5개 질문으로 공통 취향을 알아보고 친해지는 아기자기한 일치도 테스트",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

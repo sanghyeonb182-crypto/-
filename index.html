@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remix: 나와 너의 취향 일치도는?</title>
+    
+    <!-- Link customized stylesheets -->
+    <link rel="stylesheet" href="/style.css" />
+    
+    <!-- In-browser Tailwind engine with custom font config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              gowun: ["'Gowun Dodum'", 'sans-serif'],
+              jua: ["'Jua'", 'sans-serif'],
+            },
+            animation: {
+              'spin-slow': 'spin 12s linear infinite',
+              'bounce-horizontal': 'bounceHorizontal 1s infinite',
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="min-h-screen bg-gradient-to-br from-[#FFDDE1] to-[#D1D1FF] flex flex-col font-gowun selection:bg-pink-200 selection:text-pink-900 overflow-x-hidden relative">
+      
+      <!-- Frosted Glass Background Blobs -->
+      <div class="glass-blob glass-blob-yellow fixed -top-40 -left-40 w-[600px] h-[600px]" />
+      <div class="glass-blob glass-blob-mint fixed -bottom-40 -right-40 w-[600px] h-[600px]" />
+
+      <!-- Falling star / confetti on high scores -->
+      <div id="confetti-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+      <!-- Floating Sparkly Accents -->
+      <div class="fixed top-24 left-10 text-pink-300 opacity-45 text-3xl animate-pulse pointer-events-none select-none z-10">✨</div>
+      <div class="fixed bottom-24 right-12 text-rose-300 opacity-35 text-4xl animate-bounce pointer-events-none select-none z-10">💖</div>
+      <div class="fixed top-1/2 right-6 text-purple-200 opacity-45 text-2xl animate-spin-slow pointer-events-none select-none z-10">🌟</div>
+      <div class="fixed bottom-1/3 left-8 text-yellow-300 opacity-35 text-3xl animate-pulse pointer-events-none select-none z-10">🍀</div>
+
+      <!-- Content Core Wrapper -->
+      <div class="max-w-md w-full mx-auto flex-1 flex flex-col justify-between py-2 px-4 md:px-0 relative z-10">
+        
+        <!-- Upper Header Control panel -->
+        <header class="w-full flex items-center justify-between py-4 px-6 glass-effect border-b border-white/50 rounded-b-3xl shadow-xs mb-4">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-white/70 rounded-full text-pink-500 animate-pulse border border-white/55">
+              <i data-lucide="sparkles" class="w-5 h-5 fill-pink-300"></i>
+            </div>
+            <span class="font-jua text-lg text-gray-700 tracking-wide select-none">
+              나와 너의 취향 일치도는?
+            </span>
+          </div>
+
+          <button
+            id="btn-settings"
+            class="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/60 hover:bg-white/85 text-gray-700 border border-white/70 rounded-full text-xs font-semibold shadow-xs transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <i data-lucide="settings" class="w-3.5 h-3.5 animate-spin-slow text-pink-400"></i>
+            내 취향 설정하기 ⚙️
+          </button>
+        </header>
+
+        <!-- Main Display Container -->
+        <main class="flex-1 flex items-center justify-center py-4">
+          
+          <!-- SCREEN 1: WELCOME SCREEN -->
+          <div id="screen-welcome" class="screen active">
+            <div class="w-full glass-card rounded-[36px] p-6 shadow-xl flex flex-col items-center text-center gap-6">
+              <div class="relative">
+                <!-- Floating emojis circles -->
+                <span class="absolute -top-3 -left-3 text-2xl animate-bounce">🎮</span>
+                <span class="absolute -bottom-2 -right-3 text-2xl animate-pulse">🐱</span>
+                
+                <div class="w-24 h-24 bg-gradient-to-br from-white/85 to-pink-100/70 rounded-full flex items-center justify-center text-5xl shadow-sm border-2 border-white">
+                  💖
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <span class="text-pink-600 text-[11px] font-bold tracking-widest bg-white/70 px-3.5 py-1.5 rounded-full border border-white inline-block mx-auto select-none shadow-xs">
+                  ✨ 우정 궁합 일치도 탐지기 ✨
+                </span>
+                <h1 class="font-jua text-3xl text-gray-700 tracking-wide mt-1">
+                  나와 너의 취향 일치도는?
+                </h1>
+                <p class="text-sm font-semibold text-gray-400 leading-relaxed px-2">
+                  질문 5개에 답하고 우리가 얼마나 닮았는지 확인해봐!
+                </p>
+              </div>
+
+              <!-- Info Note box -->
+              <div class="w-full py-4 px-4 bg-white/40 rounded-2xl border border-white/50 text-left text-xs text-gray-400 leading-relaxed flex gap-2">
+                <div class="text-base select-none">💡</div>
+                <div class="text-gray-500/90 font-medium">
+                  <span class="font-bold text-pink-600">사용법: </span>
+                  처음 만난 반 친구나 소중한 실친이 내 폰으로 직접 해보는 상황이야! 질문에 성실하게 답해주면 우리의 성향 백분율(%) 계산이 완료돼!
+                </div>
+              </div>
+
+              <!-- Customize state status pill loaded dynamically -->
+              <div id="welcome-status" class="w-full flex items-center justify-center">
+                <span class="text-[11px] font-bold text-amber-600 bg-amber-50/50 px-2.5 py-0.5 rounded-full border border-amber-100/50">
+                  🟡 현재 기본 제공 취향정보로 작동 중이에요.
+                </span>
+              </div>
+
+              <div class="w-full flex flex-col gap-2.5 mt-2">
+                <button
+                  id="btn-start"
+                  class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-400 hover:from-pink-600 hover:to-rose-500 text-white font-jua text-lg rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  테스트 시작하기! 🚀
+                </button>
+
+                <button
+                  id="btn-customize-link"
+                  class="w-full py-2.5 text-xs font-semibold text-gray-500 hover:text-pink-500 transition-colors bg-white/50 hover:bg-white/70 rounded-xl border border-white/65 cursor-pointer"
+                >
+                  새 학기 맞춤용! 내 취향으로 질문지 세팅하기 ⚙️
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SCREEN 2: SETUP PREFERENCES SCREEN -->
+          <div id="screen-setup" class="screen">
+            <div class="w-full glass-card rounded-[32px] p-6 shadow-xl flex flex-col gap-5">
+              <div class="text-center">
+                <span class="inline-block px-3.5 py-1 bg-white/70 text-gray-700 text-xs rounded-full font-bold mb-2 shadow-xs border border-white">
+                  ⚙️ 제작자(나) 전용 설정
+                </span>
+                <h2 class="text-xl font-jua text-gray-700">내 진짜 취향과 질문을 정해봐!</h2>
+                <p class="text-xs text-gray-500 mt-1">
+                  여기에 설정한 답이 친구들이 풀어볼 정답이 됩니다. 질문 텍스트도 마음대로 고칠 수 있어요!
+                </p>
+              </div>
+
+              <!-- Scrollable Setup Questions list -->
+              <div id="setup-questions-container" class="flex flex-col gap-4 overflow-y-auto max-h-[360px] pr-1 scrollbar-thin">
+                <!-- Rows load dynamically -->
+              </div>
+
+              <div class="flex flex-col gap-2 pt-2 border-t border-gray-100">
+                <div class="flex gap-2">
+                  <button
+                    id="btn-setup-reset"
+                    type="button"
+                    class="flex-1 flex items-center justify-center gap-1 py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-xl text-xs font-medium border border-gray-200 transition-colors cursor-pointer"
+                  >
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 text-gray-400"></i>
+                    기본 질문으로 초기화
+                  </button>
+                  
+                  <button
+                    id="btn-setup-save"
+                    type="button"
+                    class="flex-1 flex items-center justify-center gap-1 py-2.5 px-4 bg-gradient-to-r from-pink-500 to-rose-400 hover:from-pink-600 hover:to-rose-500 text-white rounded-xl text-xs font-bold tracking-wider shadow-md hover:shadow-lg transition-all cursor-pointer"
+                  >
+                    <i data-lucide="save" class="w-4 h-4 text-white"></i>
+                    저장하고 친구에게 건네기
+                  </button>
+                </div>
+
+                <button
+                  id="btn-setup-close"
+                  type="button"
+                  class="text-center py-2 text-xs text-gray-400 hover:text-gray-600 font-medium transition-colors cursor-pointer"
+                >
+                  돌아가기 (닫기)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SCREEN 3: TEST QUESTIONS SCREEN -->
+          <div id="screen-test" class="screen">
+            <div class="w-full flex flex-col gap-5">
+              
+              <!-- Interactive Progress indicators -->
+              <div class="glass-card rounded-2xl p-4 shadow-sm">
+                <div class="flex justify-between items-center mb-2.5">
+                  <span class="text-xs font-bold text-gray-700 font-jua flex items-center gap-1 select-none">
+                    <i data-lucide="heart" class="w-3.5 h-3.5 fill-pink-400 stroke-none animate-bounce text-pink-400"></i>
+                    우리의 우정 미터 채우는 중!
+                  </span>
+                  <span id="progress-text-content" class="text-xs font-bold text-gray-500 font-jua">
+                    0 / 5 완료
+                  </span>
+                </div>
+                
+                <div class="w-full h-3 bg-white/35 rounded-full overflow-hidden border border-white/40">
+                  <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-pink-400 to-[#6C5CE7] rounded-full transition-all duration-300" style="width: 0%;"></div>
+                </div>
+
+                <!-- Small step preview dots -->
+                <div id="test-steps-container" class="flex justify-between mt-3 px-1">
+                  <!-- Dots generated dynamically -->
+                </div>
+              </div>
+
+              <!-- Main question card -->
+              <div class="glass-card rounded-3xl p-6 shadow-lg border border-white/60 flex flex-col items-center text-center relative overflow-hidden">
+                <div class="absolute top-[-10px] right-[-10px] w-28 h-28 bg-white/20 rounded-full blur-xl pointer-events-none" />
+
+                <div id="test-question-step-badge" class="inline-block px-3 py-1 bg-white/75 border border-white/80 text-[#6C5CE7] text-xs font-bold rounded-full mb-4 shadow-xs select-none">
+                  질문 1번
+                </div>
+
+                <div id="test-question-emoji" class="w-20 h-20 flex items-center justify-center bg-white/80 rounded-full text-4xl shadow-xs border border-white mb-5 relative select-none">
+                  💚🍫
+                </div>
+
+                <h3 id="test-question-text" class="text-xl md:text-2xl font-jua text-[#4A4A4A] leading-snug px-2 min-h-[72px] flex items-center justify-center">
+                  민트초코 칩 음료나 아이스크림을 좋아해?
+                </h3>
+
+                <!-- State indicator: 내 선택 -->
+                <div id="test-current-choice-info" class="mt-1 mb-3 text-xs font-bold text-gray-500 hidden">
+                  내 선택: Yes
+                </div>
+
+                <!-- Custom Yes/No decision buttons -->
+                <div class="w-full grid grid-cols-2 gap-4 mt-6">
+                  <button
+                    id="btn-choice-yes"
+                    class="py-4 rounded-2xl flex flex-col items-center justify-center gap-1 border transition-all cursor-pointer bg-[#B2F2BB]/75 hover:bg-[#B2F2BB] text-[#2B8A3E] border-[#94D82D]/40 shadow-[0_4px_0_#94D82D] hover:scale-[1.05] active:scale-[0.95]"
+                  >
+                    <span class="text-3xl">⭕</span>
+                    <span class="font-jua text-base tracking-wide mt-1">Yes! 맞아!</span>
+                  </button>
+
+                  <button
+                    id="btn-choice-no"
+                    class="py-4 rounded-2xl flex flex-col items-center justify-center gap-1 border transition-all cursor-pointer bg-[#FFD1DC]/75 hover:bg-[#FFD1DC] text-[#C92A2A] border-[#FFA8A8]/45 shadow-[0_4px_0_#FFA8A8] hover:scale-[1.05] active:scale-[0.95]"
+                  >
+                    <span class="text-3xl">❌</span>
+                    <span class="font-jua text-base tracking-wide mt-1">No! 아냐!</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Footer operations area -->
+              <div class="flex items-center justify-between">
+                <button
+                  id="btn-prev-q"
+                  class="flex items-center gap-1 px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 cursor-pointer active:scale-95"
+                >
+                  <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                  이전 질문
+                </button>
+
+                <button
+                  id="btn-next-q"
+                  class="text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 cursor-pointer active:scale-95 flex items-center justify-center gap-1 px-4 py-2 rounded-xl text-xs font-bold"
+                >
+                  목록 넘기기
+                  <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <button
+                id="btn-test-back"
+                class="text-center py-2.5 text-xs font-semibold text-gray-400 hover:text-pink-500 transition-colors bg-white/20 hover:bg-white/55 border border-transparent hover:border-pink-100 rounded-xl cursor-pointer"
+              >
+                처음 화면으로 되돌아가기
+              </button>
+
+            </div>
+          </div>
+
+          <!-- SCREEN 4: SUMMARY & RESULTS PANEL -->
+          <div id="screen-result" class="screen">
+            <div class="w-full flex flex-col gap-6">
+              
+              <!-- Circle score details -->
+              <div class="glass-card rounded-[32px] p-6 shadow-xl flex flex-col items-center">
+                <span id="result-emoji-title" class="text-3xl mb-1">😃🌟🙌</span>
+                <h2 id="result-title" class="font-jua text-2xl text-[#4A4A4A] tracking-wide mt-1 text-center">
+                  우린 꽤 통하는 편!
+                </h2>
+
+                <!-- Circular circular ring -->
+                <div class="relative w-36 h-36 flex items-center justify-center my-6">
+                  <svg class="w-full h-full transform -rotate-90">
+                    <circle
+                      cx="72"
+                      cy="72"
+                      r="60"
+                      class="stroke-white/35"
+                      stroke-width="10"
+                      fill="transparent"
+                    />
+                    <circle
+                      id="result-circle-fill"
+                      cx="72"
+                      cy="72"
+                      r="60"
+                      class="stroke-[#6C5CE7] transition-all duration-1000 ease-out"
+                      stroke-width="10"
+                      fill="transparent"
+                      stroke-dasharray="376.99"
+                      stroke-dashoffset="376.99"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <div class="absolute flex flex-col items-center justify-center">
+                    <span id="result-percentage" class="font-jua text-4xl text-[#6C5CE7]">0%</span>
+                    <span class="text-[10px] font-bold text-gray-400 tracking-wider">HARMONY</span>
+                  </div>
+                </div>
+
+                <div class="text-center px-4 w-full">
+                  <p id="result-message" class="font-bold text-gray-700 text-lg leading-snug">
+                    "우와! 절반 이상 닮은 60% 일치!"
+                  </p>
+                  <p id="result-submessage" class="text-sm text-gray-500 mt-2.5 leading-relaxed bg-white/45 p-3.5 rounded-2xl border border-white/55">
+                    조금만 더 대화해보면 매일 떠들 수 있는 파트너가 될 예감! 조만간 친해지자 ☕
+                  </p>
+                </div>
+              </div>
+
+              <!-- Question by Question Detail Cards list -->
+              <div class="glass-card rounded-[32px] p-5 shadow-lg flex flex-col gap-3">
+                <h3 class="font-jua text-base text-[#4A4A4A] flex items-center gap-1">
+                  <i data-lucide="corner-right-down" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                  질문별 취향 상세 비교하기 🔍
+                </h3>
+
+                <!-- Comparison Rows Container -->
+                <div id="result-comparison-container" class="flex flex-col gap-3 mt-1.5">
+                  <!-- Renders dynamically -->
+                </div>
+              </div>
+
+              <!-- Action button area -->
+              <div class="flex flex-col gap-2.5">
+                <button
+                  id="btn-restart-from-summary"
+                  class="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-pink-500 to-[#6C5CE7] hover:from-[#6C5CE7] hover:to-pink-600 text-white font-jua text-base rounded-2xl shadow-md hover:shadow-lg transition-transform active:scale-95 cursor-pointer"
+                >
+                  <i data-lucide="rotate-ccw" class="w-4.5 h-4.5"></i>
+                  다음 친구도 테스트하기! 🔄
+                </button>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <button
+                    id="btn-share-result"
+                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-white/60 hover:bg-white/90 text-[#6C5CE7] border border-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                    결과 복사하기 📢
+                  </button>
+
+                  <button
+                    id="btn-reconfigure"
+                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-white/60 hover:bg-white/90 text-gray-600 border border-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <i data-lucide="settings" class="w-3.5 h-3.5 text-pink-400"></i>
+                    질문/취향 수정 ⚙️
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </main>
+
+        <!-- Deco Footer line -->
+        <footer class="py-4 text-center select-none shrink-0 mt-3 md:mt-0">
+          <p class="text-[10px] font-semibold text-gray-400 flex items-center justify-center gap-1">
+            <i data-lucide="heart" class="w-3 h-3 text-pink-300 fill-pink-300 animate-pulse"></i>
+            친하게 지내요! 주말 약속 유도 웹카드 제작소
+          </p>
+        </footer>
+
+      </div>
+    </div>
+
+    <!-- Load Lucide SVGs Renderer CDN as static script -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load custom javascript logic -->
+    <script src="/script.js" defer></script>
+  </body>
+</html>
