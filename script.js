@@ -138,8 +138,11 @@ function showScreen(screenId) {
 // Global UI Interactivity Handlers
 function setupGlobalEvents() {
   // Welcomes links
-  document.getElementById("btn-start").addEventListener("click", () => showScreen("test"));
-  document.getElementById("btn-customize-link").addEventListener("click", () => showScreen("setup"));
+  const btnStart = document.getElementById("btn-start");
+  if (btnStart) btnStart.addEventListener("click", () => showScreen("test"));
+  
+  const btnCustomizeLink = document.getElementById("btn-customize-link");
+  if (btnCustomizeLink) btnCustomizeLink.addEventListener("click", () => showScreen("setup"));
   
   // Header Settings
   const settingsBtn = document.getElementById("btn-settings");
@@ -148,28 +151,50 @@ function setupGlobalEvents() {
   }
 
   // Setups buttons
-  document.getElementById("btn-setup-reset").addEventListener("click", resetSetupToDefault);
-  document.getElementById("btn-setup-save").addEventListener("click", saveSetupQuestions);
-  document.getElementById("btn-setup-close").addEventListener("click", () => showScreen("welcome"));
-  document.getElementById("btn-setup-back").addEventListener("click", () => showScreen("welcome"));
+  const btnSetupReset = document.getElementById("btn-setup-reset");
+  if (btnSetupReset) btnSetupReset.addEventListener("click", resetSetupToDefault);
+  
+  const btnSetupSave = document.getElementById("btn-setup-save");
+  if (btnSetupSave) btnSetupSave.addEventListener("click", saveSetupQuestions);
+  
+  const btnSetupClose = document.getElementById("btn-setup-close");
+  if (btnSetupClose) btnSetupClose.addEventListener("click", () => showScreen("welcome"));
+  
+  const btnSetupBack = document.getElementById("btn-setup-back");
+  if (btnSetupBack) btnSetupBack.addEventListener("click", () => showScreen("welcome"));
 
   // Tests steps control buttons
-  document.getElementById("btn-prev-q").addEventListener("click", handlePreviousQuestion);
-  document.getElementById("btn-next-q").addEventListener("click", handleNextOrSubmitQuestion);
-  document.getElementById("btn-test-back").addEventListener("click", () => {
-    if (confirm("정말로 메인 화면으로 돌아가시겠어요? 입력 중인 대답이 초기화됩니다.")) {
-      showScreen("welcome");
-    }
-  });
+  const btnPrevQ = document.getElementById("btn-prev-q");
+  if (btnPrevQ) btnPrevQ.addEventListener("click", handlePreviousQuestion);
+  
+  const btnNextQ = document.getElementById("btn-next-q");
+  if (btnNextQ) btnNextQ.addEventListener("click", handleNextOrSubmitQuestion);
+  
+  const btnTestBack = document.getElementById("btn-test-back");
+  if (btnTestBack) {
+    btnTestBack.addEventListener("click", () => {
+      if (confirm("정말로 메인 화면으로 돌아가시겠어요? 입력 중인 대답이 초기화됩니다.")) {
+        showScreen("welcome");
+      }
+    });
+  }
 
   // Test Answer Options
-  document.getElementById("btn-choice-yes").addEventListener("click", () => selectTestAnswer(true));
-  document.getElementById("btn-choice-no").addEventListener("click", () => selectTestAnswer(false));
+  const btnChoiceYes = document.getElementById("btn-choice-yes");
+  if (btnChoiceYes) btnChoiceYes.addEventListener("click", () => selectTestAnswer(true));
+  
+  const btnChoiceNo = document.getElementById("btn-choice-no");
+  if (btnChoiceNo) btnChoiceNo.addEventListener("click", () => selectTestAnswer(false));
 
   // Results Buttons
-  document.getElementById("btn-restart-from-summary").addEventListener("click", () => showScreen("welcome"));
-  document.getElementById("btn-share-result").addEventListener("click", copyResultToClipboard);
-  document.getElementById("btn-reconfigure").addEventListener("click", () => showScreen("setup"));
+  const btnRestartFromSummary = document.getElementById("btn-restart-from-summary");
+  if (btnRestartFromSummary) btnRestartFromSummary.addEventListener("click", () => showScreen("welcome"));
+  
+  const btnShareResult = document.getElementById("btn-share-result");
+  if (btnShareResult) btnShareResult.addEventListener("click", copyResultToClipboard);
+  
+  const btnReconfigure = document.getElementById("btn-reconfigure");
+  if (btnReconfigure) btnReconfigure.addEventListener("click", () => showScreen("setup"));
 }
 
 /* ------------------ SETUP PREFERENCES ------------------ */

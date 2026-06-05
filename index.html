@@ -6,7 +6,7 @@
     <title>Remix: 나와 너의 취향 일치도는?</title>
     
     <!-- Link customized stylesheets -->
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="./style.css" />
     
     <!-- In-browser Tailwind engine with custom font config -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,8 +31,8 @@
     <div class="min-h-screen bg-gradient-to-br from-[#FFDDE1] to-[#D1D1FF] flex flex-col font-gowun selection:bg-pink-200 selection:text-pink-900 overflow-x-hidden relative">
       
       <!-- Frosted Glass Background Blobs -->
-      <div class="glass-blob glass-blob-yellow fixed -top-40 -left-40 w-[600px] h-[600px]" />
-      <div class="glass-blob glass-blob-mint fixed -bottom-40 -right-40 w-[600px] h-[600px]" />
+      <div class="glass-blob glass-blob-yellow fixed -top-40 -left-40 w-[600px] h-[600px]"></div>
+      <div class="glass-blob glass-blob-mint fixed -bottom-40 -right-40 w-[600px] h-[600px]"></div>
 
       <!-- Falling star / confetti on high scores -->
       <div id="confetti-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
@@ -206,7 +206,7 @@
 
               <!-- Main question card -->
               <div class="glass-card rounded-3xl p-6 shadow-lg border border-white/60 flex flex-col items-center text-center relative overflow-hidden">
-                <div class="absolute top-[-10px] right-[-10px] w-28 h-28 bg-white/20 rounded-full blur-xl pointer-events-none" />
+                <div class="absolute top-[-10px] right-[-10px] w-28 h-28 bg-white/20 rounded-full blur-xl pointer-events-none"></div>
 
                 <div id="test-question-step-badge" class="inline-block px-3 py-1 bg-white/75 border border-white/80 text-[#6C5CE7] text-xs font-bold rounded-full mb-4 shadow-xs select-none">
                   질문 1번
@@ -386,6 +386,6 @@
     <!-- Load Lucide SVGs Renderer CDN as static script -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Load custom javascript logic -->
-    <script src="/script.js" defer></script>
+    <script src="./script.js" defer></script>
   </body>
 </html>
