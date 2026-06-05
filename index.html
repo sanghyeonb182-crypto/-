@@ -8,6 +8,24 @@
     <!-- Link customized stylesheets -->
     <link rel="stylesheet" href="./style.css" />
     
+    <style>
+      /* Ensure screens are hidden by default before stylesheets are fully loaded */
+      .screen {
+        display: none;
+        width: 100%;
+      }
+      .screen.active {
+        display: block !important;
+      }
+      /* Prevent horizontal viewport scroll */
+      html, body {
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+    </style>
+    
     <!-- In-browser Tailwind engine with custom font config -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
